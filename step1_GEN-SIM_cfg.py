@@ -2,7 +2,7 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: Configuration/Generator/python/test_ALP_cff.py -s LHE,GEN --conditions auto:mc --datatier GEN-SIM-RAW --eventcontent RAWSIM -n 100 --no_exec --fileout step1_GEN-SIM.root --python_filename step1_GEN-SIM_cfg.py
+# with command line options: Configuration/Generator/python/test_ALP_cff.py -s GEN --conditions auto:mc --datatier GEN-SIM-RAW --eventcontent RAWSIM -n 100 --no_exec --fileout step1_GEN-SIM.root --python_filename step1_GEN-SIM_cfg.py
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process('GEN')
@@ -28,9 +28,8 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("EmptySource")
 
-process.options = cms.untracked.PSet(
-
-)
+process.options = cms.untracked.PSet()
+process.options.numberOfThreads = cms.untracked.int32(8)
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -40,6 +39,10 @@ process.configurationMetadata = cms.untracked.PSet(
 )
 
 # Output definition
+zd_mass = '20'
+number_of_jets = '0'
+step = 'LHE-GEN-SIM'
+outputFileName = 'zd'+number_of_jets+'j_'+'mzd'+zd_mass+'_'+step+'.root'
 
 process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
     SelectEvents = cms.untracked.PSet(
@@ -50,7 +53,7 @@ process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
         filterName = cms.untracked.string('')
     ),
     eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
-    fileName = cms.untracked.string('step1_GEN-SIM.root'),
+    fileName = cms.untracked.string(outputFileName),
     outputCommands = process.RAWSIMEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
@@ -72,7 +75,7 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
             '25:onMode = off', 
             '25:onIfMatch = 23 23', 
             '23:onMode = off', 
-            '23:onIfAny = 13',
+            '23:onIfAny = 11 13 15',
             ),
         pythia8CUEP8M1Settings = cms.vstring('Tune:pp 14', 
             'Tune:ee 7', 
@@ -106,7 +109,8 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
 
 
 process.externalLHEProducer = cms.EDProducer("ExternalLHEProducer",
-    args = cms.vstring('/afs/cern.ch/work/k/klo/Higgs/DarkZ/EvtGeneration/test/2018-03-22/genproductions/bin/MadGraph5_aMCatNLO/HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz'),    
+    #args = cms.vstring('/home/lucien/Higgs/DarkZ/DarkZ-EvtGeneration/HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz'),
+    args = cms.vstring('HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz'),
     nEvents = cms.untracked.uint32(100000),
     numberOfParameters = cms.uint32(1),
     outputFile = cms.string('cmsgrid_final.lhe'),
@@ -124,7 +128,8 @@ process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RAWSIMoutput_step = cms.EndPath(process.RAWSIMoutput)
 
 # Schedule definition
-process.schedule = cms.Schedule(process.lhe_step,process.generation_step,process.genfiltersummary_step,process.endjob_step,process.RAWSIMoutput_step)
+#process.schedule = cms.Schedule(process.lhe_step,process.generation_step,process.genfiltersummary_step,process.endjob_step,process.RAWSIMoutput_step)
+process.schedule = cms.Schedule(process.generation_step,process.genfiltersummary_step,process.endjob_step,process.RAWSIMoutput_step)
 # filter all path with the production filter sequence
 for path in process.paths:
 	if path in ['lhe_step']: continue
