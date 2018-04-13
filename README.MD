@@ -11,4 +11,9 @@ Creation time: 2018-04-13 08:02:46, Dataset size: 768.5MB, Number of blocks: 13,
 ```
 /ZD_UpTo0j_MZD20_Eps1e-2/klo-PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-PUMix-9d8f590933956796cd3e18bfb7642a20/USER
  ```
-
+ 
+ ### AODSIM samples
+ Creation time: 2018-04-13 09:45:03, Dataset size: 364.3MB, Number of blocks: 17, Number of events: 430, Number of files: 43, Physics group: CRAB3, Status: VALID, Type: mc
+ ```
+ /ZD_UpTo0j_MZD20_Eps1e-2/klo-PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-AODSIM-351414bbda2cdc38d49da1680cef2a3f/USER
+```
