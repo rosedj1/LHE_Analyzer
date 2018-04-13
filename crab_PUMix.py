@@ -8,8 +8,8 @@ zd_mass = '20'
 number_of_jets = '0'
 epsilon = '1e-2'
 custom_string_for_dataset = ''
-step = 'LHE-GEN-SIM'
-version = 'v2'
+step = 'PUMix'
+version = 'v3'
 
 job_label = 'ZD_UpTo'+number_of_jets+'j_MZD'+zd_mass+'_Eps'+epsilon
 mass = zd_mass
@@ -28,23 +28,19 @@ config.General.transferLogs    = True
 
 #____________________________________________________________||
 config.section_("JobType")
-config.JobType.pluginName                       = 'PrivateMC'
-config.JobType.psetName                         = 'step1_GEN-SIM_cfg.py' # dummy PSet 
-config.JobType.inputFiles                       = ['externalLHEProducer_and_PYTHIA8_Hadronizer_cff.py','HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz']
-config.JobType.numCores                         = 8
-config.JobType.scriptExe                        = 'lhe_gen-sim_steps.sh'
-config.JobType.disableAutomaticOutputCollection = True
-config.JobType.outputFiles                      = ['zd'+number_of_jets+'j_'+'mzd'+zd_mass+'_'+step+'.root','zd'+number_of_jets+'j_'+'mzd'+zd_mass+'_'+step+'_inLHE.root']
+config.JobType.pluginName                       = 'Analysis'
+config.JobType.psetName                         = 'step2_PUMix_cfg.py'
+config.JobType.outputFiles                      = ['zd0j_mzd20_PUMix.root',]
 
 #____________________________________________________________||
 config.section_("Data")
-config.Data.outputPrimaryDataset    = job_label 
-config.Data.inputDBS                = 'global'
-config.Data.splitting               = 'EventBased'
-config.Data.unitsPerJob             = 500 # the number of events here must match the number of events in the exeternalLHEProducer
-NJOBS                               = 100
+config.Data.inputDBS                = 'phys03'
+config.Data.inputDataset            = '/ZD_UpTo0j_MZD20_Eps1e-2/klo-PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-LHE-GEN-SIM_RAWSIMoutput-9434d492aa72fca0c473a18f78c36aaa/USER'
+config.Data.splitting               = 'FileBased'
+config.Data.unitsPerJob             = 1 # the number of events here must match the number of events in the exeternalLHEProducer
+NJOBS                               = 500
 config.Data.totalUnits              = config.Data.unitsPerJob * NJOBS
-config.Data.outLFNDirBase           = '/store/user/klo/DarkPhoton_Moriond17_GEN-SIM/'+version+'/'
+config.Data.outLFNDirBase           = '/store/user/klo/DarkPhoton_Moriond17_PUMix/'+version+'/'
 config.Data.publication             = True
 config.Data.publishDBS              = 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter/'
 config.Data.outputDatasetTag        = 'PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-'+step
