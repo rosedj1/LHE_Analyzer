@@ -54,7 +54,7 @@ process.PREMIXRAWoutput = cms.OutputModule("PoolOutputModule",
         dataTier = cms.untracked.string('GEN-SIM-RAW'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_LHE_pythia8_cff_py_DIGIPREMIX_S2_DATAMIX_L1_DIGI2RAW_HLT.root'),
+    fileName = cms.untracked.string('zd0j_mzd20_PUMix.root'),
     outputCommands = process.PREMIXRAWEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )
