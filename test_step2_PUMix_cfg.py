@@ -32,7 +32,7 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:zd0j_mzd20_LHE-GEN-SIM_95.root'),
+        fileNames = cms.untracked.vstring('root://cmsio5.rc.ufl.edu//store/user/klo/DarkPhoton_Moriond17_GEN-SIM/v4/ZD_UpTo0j_MZD15_Eps1e-2/PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-LHE-GEN-SIM/180615_090339/0000/zd0j_mzd15_LHE-GEN-SIM_36.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
@@ -76,7 +76,7 @@ process.endjob_step = cms.EndPath(process.endOfProcess)
 process.PREMIXRAWoutput_step = cms.EndPath(process.PREMIXRAWoutput)
 
 # Schedule definition
-process.schedule = cms.Schedule(process.digitisation_step,process.datamixing_step,process.L1simulation_step,process.digi2raw_step)
+process.schedule = cms.Schedule(process.digitisation_step,process.digi2raw_step,process.datamixing_step,process.L1simulation_step)
 process.schedule.extend(process.HLTSchedule)
 process.schedule.extend([process.endjob_step,process.PREMIXRAWoutput_step])
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
