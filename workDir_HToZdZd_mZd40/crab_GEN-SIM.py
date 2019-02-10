@@ -4,9 +4,9 @@ import datetime, time
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M')
 
-zd_mass = '40'
-number_of_jets = '0'
-epsilon = '1e-4'
+zd_mass = '40' 
+number_of_jets = '0'    
+epsilon = '1e-2'
 custom_string_for_dataset = ''
 step = 'LHE-GEN-SIM'
 version = 'v1'
@@ -30,7 +30,8 @@ config.General.transferLogs    = True
 config.section_("JobType")
 config.JobType.pluginName                       = 'PrivateMC'
 config.JobType.psetName                         = 'step1_GEN-SIM_cfg.py' # dummy PSet 
-config.JobType.inputFiles                       = ['externalLHEProducer_and_PYTHIA8_Hadronizer_cff.py','../HToZdZd_gridpack/HAHM_variablesw_v3_MZd'+zd_mass+'.tar.xz']
+#config.JobType.inputFiles                       = ['externalLHEProducer_and_PYTHIA8_Hadronizer_cff.py','../HToZdZd_gridpack/HAHM_variablesw_v3_MZd'+zd_mass+'.tar.xz']
+config.JobType.inputFiles                       = ['externalLHEProducer_and_PYTHIA8_Hadronizer_cff.py','HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz']
 config.JobType.numCores                         = 8
 config.JobType.scriptExe                        = 'lhe_gen-sim_steps.sh'
 config.JobType.disableAutomaticOutputCollection = True
@@ -42,9 +43,10 @@ config.Data.outputPrimaryDataset    = job_label
 config.Data.inputDBS                = 'global'
 config.Data.splitting               = 'EventBased'
 config.Data.unitsPerJob             = 500 # the number of events here must match the number of events in the exeternalLHEProducer
-NJOBS                               = 100
+NJOBS                               = 1
 config.Data.totalUnits              = config.Data.unitsPerJob * NJOBS
-config.Data.outLFNDirBase           = '/store/user/klo/HToZdZd_GEN-SIM/'+version+'/'
+#config.Data.outLFNDirBase           = '/store/user/klo/HToZdZd_GEN-SIM/'+version+'/'
+config.Data.outLFNDirBase           = '/store/user/drosenzw/HToZdZd_GEN-SIM/'+version+'/'
 config.Data.publication             = True
 config.Data.publishDBS              = 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter/'
 config.Data.outputDatasetTag        = 'PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-'+step

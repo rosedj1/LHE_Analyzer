@@ -4,7 +4,7 @@ import datetime, time
 ts = time.time()
 st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d-%H-%M')
 
-zd_mass = '40'
+zd_mass = '30'
 number_of_jets = '0'
 epsilon = '1e-4'
 custom_string_for_dataset = ''
@@ -30,13 +30,12 @@ config.General.transferLogs    = True
 config.section_("JobType")
 config.JobType.pluginName                       = 'Analysis'
 config.JobType.psetName                         = 'step2_PUMix_cfg.py'
-config.JobType.outputFiles                      = ['zd0j_PUMix.root',]
-config.JobType.maxMemoryMB                      = 4000
+config.JobType.outputFiles                      = ['zd0j_mzd30_PUMix.root',]
 
 #____________________________________________________________||
 config.section_("Data")
 config.Data.inputDBS                = 'phys03'
-config.Data.inputDataset            = '/ZD_UpTo0j_MZD40_Eps1e-4/klo-PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-LHE-GEN-SIM_RAWSIMoutput-808549ab9ee5f91f70c21aa74c585591/USER'
+config.Data.inputDataset            = '/ZD_UpTo0j_MZD30_Eps1e-4/klo-PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-LHE-GEN-SIM_RAWSIMoutput-27bef91130161df085e43dd9d903270b/USER'
 config.Data.splitting               = 'FileBased'
 config.Data.unitsPerJob             = 1 # the number of events here must match the number of events in the exeternalLHEProducer
 NJOBS                               = 500

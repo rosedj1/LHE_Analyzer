@@ -18,28 +18,29 @@ eval `scram runtime -sh`
 
 INPUT_FRAGMENT=externalLHEProducer_and_PYTHIA8_Hadronizer_cff.py
 
-ZDMASS=50
+ZD_MASS=40
 NOFJET=0
 ESPILON=1e-2
 GLOBALTAG=93X_mc2017_realistic_v3
 NEVENTS=500
 
 echo "================= PB: Input Paramateres ========================================"  | tee -a job.log
-echo $ZDMASS
+echo $ZD_MASS
 echo $NOFJET
 echo $ESPILON
 echo $GLOBALTAG
 echo $NEVENTS
 
 
-GRIDPACK_NAME=HAHM_variablesw_v3_MZd${ZDMASS}.tar.xz
+#GRIDPACK_NAME=HAHM_variablesw_v3_MZd${ZD_MASS}.tar.xz
+GRIDPACK_NAME=HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz
 
 echo "================= PB: Gridpack name ========================================"  | tee -a job.log
 echo $GRIDPACK_NAME
 
 echo "================= PB: Preparing the configs from gragments ====================" | tee -a job.log
 
-JOB_LABEL=zd${NOFJET}j_mzd${ZDMASS}
+JOB_LABEL=zd${NOFJET}j_mzd${ZD_MASS}
 OUTPUT_FRAGMENT=${INPUT_FRAGMENT/_cff.py/}_${JOB_LABEL}_cff.py
 
 
