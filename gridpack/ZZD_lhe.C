@@ -28,7 +28,7 @@ const int LEPSIZE = 4;
 const double PI = 3.1415926;
 const double mZ_PDG = 91.188;//GeV
 
-void ZZD_lhe(TString powhegLheFile = "cmsgrid_final.lhe", long int Nevents = 15000, bool bApplyCuts = true, unsigned int kDebugLevel = 1) {
+void ZZD_lhe(TString powhegLheFile = "cmsgrid_final.lhe", long int Nevents = 10000, bool bApplyCuts = true, unsigned int kDebugLevel = 1) {
 // define input
     ifstream in;
     in.open(powhegLheFile.Data(),ios::in);
@@ -38,8 +38,8 @@ void ZZD_lhe(TString powhegLheFile = "cmsgrid_final.lhe", long int Nevents = 150
     // These are turned into real ints using sed from a different script
     // Feel free to replace these with values you want.
     // They are only used for naming purposes.
-    int zdmass = ZDMASS;
-    int lhaid = LHAID;
+    int zdmass = 20;
+    int lhaid = 306000;
 
     strtemp.assign(powhegLheFile.Data());
     strtemp.append("MZd");
@@ -49,6 +49,7 @@ void ZZD_lhe(TString powhegLheFile = "cmsgrid_final.lhe", long int Nevents = 150
     strtemp.append("events_");
     strtemp.append("lhaid");
     strtemp.append(std::to_string(lhaid));
+    strtemp.append("_");
     if (bApplyCuts == true) {
         strtemp.append("WITH"); 
     }
