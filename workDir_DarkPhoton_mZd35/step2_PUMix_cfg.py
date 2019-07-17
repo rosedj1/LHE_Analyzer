@@ -3,6 +3,8 @@
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
 # with command line options: Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_LHE_pythia8_cff.py --mc --eventcontent PREMIXRAW --datatier GEN-SIM-RAW --conditions 94X_mc2017_realistic_v10 --step DIGIPREMIX_S2,DATAMIX,L1,DIGI2RAW,HLT:2e34v40 --datamix PreMix --era Run2_2017 --python_filename test_RunIIFall17DRPremix_GEN-SIM-RAW_step2_cfg.py --no_exec --customise Configuration/DataProcessing/Utils.addMonitoring -n 10 --pileup_input dbs:/Neutrino_E-10_gun/RunIISummer17PrePremix-MC_v2_94X_mc2017_realistic_v9-v1/GEN-SIM-DIGI-RAW
+
+## PS = Parameter Set
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
@@ -26,19 +28,27 @@ process.load('HLTrigger.Configuration.HLT_2e34v40_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
+zd_mass = '7'
+epsilon = '1e-2'
+
+## maxEvents is removed by CRAB in submitted jobs
+## It is only here for quick, interactive testing
+## Read a max number of events from the TOTAL JOB (not each file)
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(100000)
 )
 
 # Input source
+#process.source = cms.Source("EmptySource",
 process.source = cms.Source("PoolSource",
-        fileNames = cms.untracked.vstring('root://cmsio5.rc.ufl.edu//store/user/klo/DarkPhoton_Moriond17_GEN-SIM/v4/ZD_UpTo0j_MZD15_Eps1e-2/PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-LHE-GEN-SIM/180615_090339/0000/zd0j_mzd15_LHE-GEN-SIM_36.root'),
+        #fileNames = cms.untracked.vstring('root://cmsio5.rc.ufl.edu//store/user/klo/DarkPhoton_Moriond17_GEN-SIM/v4/ZD_UpTo0j_MZD15_Eps1e-2/PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-LHE-GEN-SIM/180615_090339/0000/zd0j_mzd15_LHE-GEN-SIM_36.root'),
+        #fileNames = cms.untracked.vstring('root://cmsio.rc.ufl.edu//cms/data/store/user/drosenzw/DarkPhoton_Moriond17_GEN-SIM/v4/eps1e-2/MZd4/zd0j_MZd4_eps1e-2/PUMoriond17-Realistic25ns13TeVEarly2017Collision-93X_mc2017_realistic_v3-LHE-GEN-SIM/180727_012218/0000/zd0j_MZd4_eps1e-2_LHE-GEN-SIM_10.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
-process.options = cms.untracked.PSet(
+process.options = cms.untracked.PSet()
+process.options.numberOfThreads = cms.untracked.int32(8)
 
-)
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -54,7 +64,7 @@ process.PREMIXRAWoutput = cms.OutputModule("PoolOutputModule",
         dataTier = cms.untracked.string('GEN-SIM-RAW'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('zd0j_mzd35_PUMix.root'),
+    fileName = cms.untracked.string('zd0j_eps'+epsilon+'_mzd'+zd_mass+'_PUMix.root'),
     outputCommands = process.PREMIXRAWEventContent.outputCommands,
     splitLevel = cms.untracked.int32(0)
 )

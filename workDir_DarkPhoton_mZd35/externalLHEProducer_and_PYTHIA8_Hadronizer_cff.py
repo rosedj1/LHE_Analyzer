@@ -6,7 +6,8 @@ from Configuration.Generator.Pythia8PowhegEmissionVetoSettings_cfi import *
 # External lHE producer configuration
 externalLHEProducer = cms.EDProducer("ExternalLHEProducer",
         args = cms.vstring( 'THISDIR' + '/GRIDPACKNAME'),
-        nEvents = cms.untracked.uint32(500),
+	## nEvents per file
+        nEvents = cms.untracked.uint32(1000),
         numberOfParameters = cms.uint32(1),
         outputFile = cms.string('cmsgrid_final.lhe'),
         scriptName = cms.FileInPath('GeneratorInterface/LHEInterface/data/run_generic_tarball_cvmfs.sh')

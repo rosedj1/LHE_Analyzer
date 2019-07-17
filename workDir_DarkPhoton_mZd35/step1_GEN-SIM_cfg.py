@@ -1,3 +1,6 @@
+## You can find the template for this file and more information about it at: 
+## https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookCRAB3Tutorial#2_CRAB_configuration_file_to_run
+
 # Auto generated configuration file
 # using: 
 # Revision: 1.19 
@@ -14,10 +17,12 @@ process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+#process.load('Configuration.Geometry.GeometrySimDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.Generator_cff')
 process.load('IOMC.EventVertexGenerators.VtxSmearedNominalCollision2015_cfi')
 process.load('GeneratorInterface.Core.genFilterSummary_cff')
+#process.load('Configuration.StandardSequences.SimIdeal_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 
@@ -25,11 +30,18 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(100000)
 )
 
+zd_mass = '3'
+epsilon = '1e-2'
+number_of_jets = '0'
+step = 'LHE-GEN-SIM'
+numThreads = 8
+outputFileName = 'zd'+number_of_jets+'j_MZd'+zd_mass+'_eps'+epsilon+'_'+step+'.root'
+
 # Input source
 process.source = cms.Source("EmptySource")
 
 process.options = cms.untracked.PSet()
-process.options.numberOfThreads = cms.untracked.int32(8)
+process.options.numberOfThreads = cms.untracked.int32(numThreads)
 
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
@@ -39,11 +51,6 @@ process.configurationMetadata = cms.untracked.PSet(
 )
 
 # Output definition
-zd_mass = '35'
-number_of_jets = '0'
-step = 'LHE-GEN-SIM'
-outputFileName = 'zd'+number_of_jets+'j_'+'mzd'+zd_mass+'_'+step+'.root'
-
 process.RAWSIMoutput = cms.OutputModule("PoolOutputModule",
     SelectEvents = cms.untracked.PSet(
         SelectEvents = cms.vstring('generation_step')
@@ -66,6 +73,11 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:mc', '')
 
 process.generator = cms.EDFilter("Pythia8HadronizerFilter",
+    comEnergy = cms.double(13000.0),
+    filterEfficiency = cms.untracked.double(1.0),
+    maxEventsToPrint = cms.untracked.int32(1),
+    pythiaHepMCVerbosity = cms.untracked.bool(False),
+    pythiaPylistVerbosity = cms.untracked.int32(1)
     PythiaParameters = cms.PSet(
         parameterSets = cms.vstring('pythia8CommonSettings', 
             'pythia8CUEP8M1Settings', 
@@ -100,18 +112,15 @@ process.generator = cms.EDFilter("Pythia8HadronizerFilter",
             'SpaceShower:pTmaxMatch = 2', 
             'TimeShower:pTmaxMatch = 2')
     ),
-    comEnergy = cms.double(13000.0),
-    filterEfficiency = cms.untracked.double(1.0),
-    maxEventsToPrint = cms.untracked.int32(1),
-    pythiaHepMCVerbosity = cms.untracked.bool(False),
-    pythiaPylistVerbosity = cms.untracked.int32(1)
 )
 
 
 process.externalLHEProducer = cms.EDProducer("ExternalLHEProducer",
     #args = cms.vstring('/home/lucien/Higgs/DarkZ/DarkZ-EvtGeneration/HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz'),
-    args = cms.vstring('HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz'),
-    nEvents = cms.untracked.uint32(100000),
+    #args = cms.vstring('HAHM_variablesw_v3_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz'),
+    args = cms.vstring('HAHM_variablesw_v3_MZd'+zd_mass+'_eps'+epsilon+'.tar.xz'),
+    ## nEvents per file
+    nEvents = cms.untracked.uint32(1000),
     numberOfParameters = cms.uint32(1),
     outputFile = cms.string('cmsgrid_final.lhe'),
     scriptName = cms.FileInPath('GeneratorInterface/LHEInterface/data/run_generic_tarball_cvmfs.sh')
@@ -123,16 +132,24 @@ process.ProductionFilterSequence = cms.Sequence(process.generator)
 # Path and EndPath definitions
 process.lhe_step = cms.Path(process.externalLHEProducer)
 process.generation_step = cms.Path(process.pgen)
+#process.simulation_step = cms.Path(process.psim)
 process.genfiltersummary_step = cms.EndPath(process.genFilterSummary)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RAWSIMoutput_step = cms.EndPath(process.RAWSIMoutput)
 
 # Schedule definition
 #process.schedule = cms.Schedule(process.lhe_step,process.generation_step,process.genfiltersummary_step,process.endjob_step,process.RAWSIMoutput_step)
-process.schedule = cms.Schedule(process.generation_step,process.genfiltersummary_step,process.endjob_step,process.RAWSIMoutput_step)
+process.schedule = cms.Schedule(
+	process.generation_step,
+	process.genfiltersummary_step,
+	process.endjob_step,
+	process.RAWSIMoutput_step
+)
+
 # filter all path with the production filter sequence
 for path in process.paths:
 	if path in ['lhe_step']: continue
+	#getattr(process,path)._seq = process.generator * getattr(process,path)._seq
 	getattr(process,path)._seq = process.ProductionFilterSequence * getattr(process,path)._seq 
 
 

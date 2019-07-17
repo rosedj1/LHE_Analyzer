@@ -18,28 +18,29 @@ eval `scram runtime -sh`
 
 INPUT_FRAGMENT=externalLHEProducer_and_PYTHIA8_Hadronizer_cff.py
 
-ZDMASS=35
+ZDMASS=3
 NOFJET=0
-ESPILON=1e-2
+EPSILON=1e-2
 GLOBALTAG=93X_mc2017_realistic_v3
-NEVENTS=500
+## NEVENTS per file
+NEVENTS=1000
 
-echo "================= PB: Input Paramateres ========================================"  | tee -a job.log
-echo $ZDMASS
-echo $NOFJET
-echo $ESPILON
-echo $GLOBALTAG
-echo $NEVENTS
+echo "================= PB: Input Parameters ========================================"  | tee -a job.log
+echo "ZDMASS:"		$ZDMASS
+echo "NOFJET:" 		$NOFJET
+echo "EPSILON:" 	$EPSILON
+echo "GLOBALTAG:" 	$GLOBALTAG
+echo "NEVENTS:" 	$NEVENTS
 
 
-GRIDPACK_NAME=HAHM_variablesw_v3_MZd${ZDMASS}.tar.xz
+GRIDPACK_NAME=HAHM_variablesw_v3_MZd${ZDMASS}_eps${EPSILON}.tar.xz
 
 echo "================= PB: Gridpack name ========================================"  | tee -a job.log
 echo $GRIDPACK_NAME
 
-echo "================= PB: Preparing the configs from gragments ====================" | tee -a job.log
+echo "================= PB: Preparing the configs from fragments ====================" | tee -a job.log
 
-JOB_LABEL=zd${NOFJET}j_mzd${ZDMASS}
+JOB_LABEL=zd${NOFJET}j_MZd${ZDMASS}_eps${EPSILON}
 OUTPUT_FRAGMENT=${INPUT_FRAGMENT/_cff.py/}_${JOB_LABEL}_cff.py
 
 
@@ -56,12 +57,15 @@ echo "================= PB: Compiling fragments from release ===================
 
 scram b
 cd ../../
+
+# Renaming externalLHEProducer_and_PYTHIA8_Hadronizer_cff.py
 CONFIG_TO_RUN=${OUTPUT_FRAGMENT/_cff/_LHE-GEN-SIM_cfg}
 
 echo "================= PB: Running cmsDriver ====================" | tee -a job.log
 
+# Make sure --fileout file:<FILE_NAME> is exactly how you want it; must match crab_GEN-SIM.py and step1_GEN-SIM_cfg.py
 echo cmsDriver.py Configuration/GenProduction/python/ThirteenTeV/Hadronizer/${OUTPUT_FRAGMENT} --fileout file:${JOB_LABEL}_LHE-GEN-SIM.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --conditions ${GLOBALTAG}  --beamspot Realistic25ns13TeVEarly2017Collision --step LHE,GEN,SIM --nThreads 8 --geometry DB:Extended --era Run2_2017 --python_filename ${CONFIG_TO_RUN} --no_exec  -n ${NEVENTS} || exit $? ; 
-cmsDriver.py Configuration/GenProduction/python/ThirteenTeV/Hadronizer/${OUTPUT_FRAGMENT} --fileout file:${JOB_LABEL}_LHE-GEN-SIM.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --conditions ${GLOBALTAG}  --beamspot Realistic25ns13TeVEarly2017Collision --step LHE,GEN,SIM --nThreads 8 --geometry DB:Extended --era Run2_2017 --python_filename ${CONFIG_TO_RUN} --no_exec -n ${NEVENTS} || exit $? ; 
+cmsDriver.py Configuration/GenProduction/python/ThirteenTeV/Hadronizer/${OUTPUT_FRAGMENT} --fileout file:${JOB_LABEL}_LHE-GEN-SIM.root --mc --eventcontent RAWSIM,LHE --datatier GEN-SIM,LHE --conditions ${GLOBALTAG}  --beamspot Realistic25ns13TeVEarly2017Collision --step LHE,GEN,SIM --nThreads 1 --geometry DB:Extended --era Run2_2017 --python_filename ${CONFIG_TO_RUN} --no_exec -n ${NEVENTS} || exit $? ; 
 
 echo "================= PB: Dumping config file ====================" | tee -a job.log
 cat ${CONFIG_TO_RUN}
@@ -80,6 +84,7 @@ if [ -r ${RunningRelease}/src ] ; then
 
 BASE=$PWD
 NUM=100
+echo "working directory: $PWD"
 
 cd ${RunningRelease}/src
 eval `scram runtime -sh`
